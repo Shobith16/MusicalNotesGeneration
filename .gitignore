@@ -1,0 +1,19 @@
+/IMP_MusicalNotes
+./model/datasets
+/audio_to_midi
+# Ignore IDE files
+.idea/
+
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+
+# Ignore model files and data directories
+*.pkl
+*.h5
+model/
+pckl/
+
+# Ignore other files and directories
+static/
+templates/
