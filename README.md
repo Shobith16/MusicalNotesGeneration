@@ -95,6 +95,13 @@ To run this project locally, follow these steps:
 ## Dataset
 
 The instrument classification model was trained on an audio dataset containing samples of guitar, drums, piano, and violin. The dataset includes labeled audio files which are used to train and evaluate the model's performance.
+Dataset Details :
+Drums 700 files
+Guitar 1081 files
+Piano 1397 files
+Violin 700 files
+
+12.9 gb and 3900 files
 
 ## Results
 
