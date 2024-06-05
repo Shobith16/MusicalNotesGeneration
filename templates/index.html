@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI File Upload</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/css.css')}}">
+    <link rel="shortcut icon" href="{{url_for('static',filename='images/icons8-orchestra-48.png')}}"
+        type="image/x-icon">
+    <script src="/static/js/js.js"></script>
+</head>
+<!-- let playdiv = document.getElementById("playButton");
+// Check if the button already exists and remove it if it does
+                    let existingButton1 = document.getElementById("play");
+                    if (existingButton1) {
+                        playdiv.removeChild(existingButton1);
+                    }
+
+                    let btn = document.createElement("button");
+                    btn.id = "play";
+                    btn.textContent = "Play Notes";
+                    
+                    btn.onclick = async function () {
+                        const formData = new FormData();
+                        formData.append('midiPath', data.midi); // Append the file path
+                        console.log(formData);
+                        try {
+                            const response = await fetch('/play', {
+                                method: "POST",
+                                body: formData
+                            });
+                            if (!response.ok) {
+                                throw new Error('Failed to upload file');
+                            }
+                            const msg = await response.json();
+                            console.log("res :", msg.success);
+                        } catch (error) {
+                            console.log("error", error);
+                        }
+                    };
+                    
+                    
+                    
+                    
+                    playdiv.appendChild(btn); -->
+
+<body>
+    <div class="about">
+        <nav>
+            <div class="name">
+                <img src="static\images\icons8-orchestra-48.png" alt="no_img">
+                <h2>MusicalNotes</h2>
+            </div>
+
+            <h3><a href="#about">About</a></h3>
+            <h3><a href="#transcribe">Transcribe</a></h3>
+            <h3><a href="#team">Team</a></h3>
+        </nav>
+    </div>
+    <div class="content">
+        <center>
+            <h1>Automtic Music Transcription To Musical Notes Using AI</h1>
+        </center>
+
+        <table class="features">
+            <tr>
+                <td><img src="static\images\icons8-upload-26.png" alt="no_img"></td>
+                <td><span>Upload Audio</span></td>
+            </tr>
+            <tr>
+                <td><img src="static\images\icons8-audio-48.png" alt="no_img" width="30px"></td>
+                <td><span id="sprt">Spearate Mixed Sounds</span></td>
+            </tr>
+            <tr>
+                <td><img src="static\images\icons8-instruments-64.png" alt="no_img" width="30px"></td>
+                <td><span id="geti">Get Instrument Name Used</span></td>
+            </tr>
+            <tr>
+                <td><img src="static\images\icons8-instuner-app-64.png" alt="no_img" width="40px"></td>
+                <td><span>Generate Notes</span></td>
+            </tr>
+        </table>
+
+    </div>
+    <div id="failurePopup" class="popup">
+        <div class="popup-content">
+            <h2>Oops! Something went wrong.!</h2><br>
+            <h3 id="error_msg" style="color:brown;"></h3><br>
+            <button onclick="closePopup()"
+                style="color:aliceblue;background:brown;padding:8px;border-radius:10px;">Close</button>
+        </div>
+    </div>
+
+    <div id="animation" width="10%">
+        <img src="static\images\Animation - 1712064638390.gif" alt="no_animation">
+    </div>
+    <div class="main" id="transcribe">
+        <center>
+            <h1>Musical Notes Generation:</h1>
+        </center><br><br>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" id="midiFileInput" name="mixedFile">
+            <small id="mxd_ck">mixed audio** </small>
+
+            <input type="checkbox" name="SI" id="SI">
+            <button type="submit">Upload Audio File</button>
+
+
+
+        </form><br>
+        <form action="/select" method="post" id="audioForm" enctype="multipart/form-data">
+            <!-- <div id="radioContainer"></div> -->
+            <!-- <label for=""></label> -->
+            <!-- Submit button -->
+            <!-- <input type="submit" value="Submit"> -->
+        </form>
+
+        <div class="outer">
+            <center>
+                <h2>Notes :</h2>
+            </center>
+            <br>
+            <div id="output"><br>
+                <center>
+                    <h2 id="instrument"></h2>
+                </center>
+                <p id="notes"></p>
+            </div>
+            <br>
+            <!-- <h1>Play Notes</h1> -->
+            <br>
+            <div id="playButton">
+
+                <!-- <button id="download">Download Notes</button> -->
+            </div>
+            <br>
+            <h1>Download Notes</h1>
+            <br>
+            <div id="downloadButton">
+
+                <!-- <button id="download">Download Notes</button> -->
+            </div>
+        </div>
+    </div><br><br>
+    <footer class="footer" id="team">
+        <center>
+            <h2>Team</h2>
+        </center><br>
+        <center><small>Designed by Team_MITE | All rights reserved.</small></center>
+        <!-- <center><small>Special Thanks to Karthik pai & Jeevan </small></center> -->
+
+    </footer>
+
+    <!-- <script  src=""></script> -->
+    <script>
+        function closePopup() {
+            const close = document.getElementById("failurePopup");
+            close.style.display = 'none';
+        }
+        async function fetchData(filename, check, instrument) {
+            try {
+
+                const animation = document.getElementById('animation');
+                animation.style.display = 'block'
+
+                const response = await fetch(`/separatedfiles/${filename}/${check}`);
+                const data = await response.json();
+
+                if (data.Notes) {
+
+                    const animation = document.getElementById('animation');
+                    animation.style.display = 'none'
+                    let inst = document.getElementById('instrument')
+                    if (!check) {
+                        inst.textContent = instrument
+                    } else {
+                        const instrument = data.inst
+                        inst.textContent = instrument
+                    }
+                    let notes = document.getElementById("notes");
+                    notes.textContent = "";
+                    notes.textContent = data.Notes;
+
+                    let notesData = data.Notes.split(' ');
+
+                    // Check if notesData is an array
+                    if (Array.isArray(notesData)) {
+                        //play button here
+                      
+
+                        let downloaddiv = document.getElementById("downloadButton");
+                        // Check if the button already exists and remove it if it does
+                        let existingButton = document.getElementById("download");
+                        if (existingButton) {
+                            downloaddiv.removeChild(existingButton);
+                        }
+
+
+                        let button = document.createElement("button");
+                        button.id = "download";
+                        button.textContent = "Download Notes";
+
+                        button.onclick = function () {
+                            download(notesData);
+                        };
+                        downloaddiv.appendChild(button);
+                    } else {
+
+                        console.error('Error: Notes data must be a list');
+                    }
+
+
+
+                    document.querySelector(".outer").style.display = "block";
+
+                    let radioContainer = document.getElementById('audioForm');
+                    radioContainer.innerHTML = " ";
+                } else if (data.Error) {
+                    console.error('Error:', data.Error);
+                    const animation = document.getElementById('animation');
+                    animation.style.display = 'none'
+                    let errorMessage = document.getElementById('error_msg');
+                    const success = false;
+                    setTimeout(function () {
+                        if (!success) {
+                            errorMessage.textContent = data.Error;
+                            document.getElementById('failurePopup').style.display = 'flex';
+
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+                const animation = document.getElementById('animation');
+                animation.style.display = 'none'
+                let errorMessage = document.getElementById('error_msg');
+                const success = false;
+                setTimeout(function () {
+                    if (!success) {
+                        errorMessage.textContent = error.message;
+                        document.getElementById('failurePopup').style.display = 'flex';
+
+                    }
+                }, 1000);
+            }
+        }
+
+        function download(notesData) {
+            // Prompt the user to enter the filename
+            let filename = prompt("Enter the filename");
+            if (!filename) {
+                console.error('No filename provided');
+                return;
+            }
+
+            // Prepare the data to be sent in the request body
+            const requestData = {
+                notes: notesData,
+                filename: filename
+            };
+
+            // Send a POST request to the /downloads endpoint
+            fetch('/downloads', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to download file');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create a temporary anchor element
+                    const a = document.createElement('a');
+                    const url = window.URL.createObjectURL(blob);
+
+                    // Set the anchor's href attribute to the download URL
+                    a.href = url;
+                    a.download = `${filename}.csv`;
+
+                    // Append the anchor to the document body and trigger a click event
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Cleanup: remove the anchor and revoke the URL object
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                });
+        }
+
+
+
+
+        let list = []
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            console.log('Upload')
+            const fileInput = document.getElementById('midiFileInput');
+            const checkbox = document.getElementById('SI');
+
+
+            const file = fileInput.files[0];
+
+            // Check if a file is selected
+            if (!file) {
+                console.error('No file selected');
+
+                let errorMessage = document.getElementById('error_msg');
+                const success = false;
+                setTimeout(function () {
+                    if (!success) {
+                        errorMessage.textContent = 'No file selected';
+                        document.getElementById('failurePopup').style.display = 'flex';
+
+                    }
+                }, 1000);
+                return;
+            }
+
+            let check = false;
+            if (checkbox.checked) {
+                console.log('checked')
+                check = true;
+
+            }
+
+            const formData = new FormData();
+            formData.append('mixedFile', file);
+            formData.append('check', check)
+            console.log('check:', check);
+            console.log(fileInput.files[0], ' ', check, ' ', formData)
+
+            const animation = document.getElementById('animation');
+            animation.style.display = 'block'
+
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to upload file');
+                        console.log("error")
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle response from backend
+                    if (data.Error) {
+                        console.error('Error:', data.Error);
+                        const animation = document.getElementById('animation');
+                        animation.style.display = 'none'
+                        let errorMessage = document.getElementById('error_msg');
+                        const success = false;
+                        setTimeout(function () {
+                            if (!success) {
+                                errorMessage.textContent = data.Error;
+                                document.getElementById('failurePopup').style.display = 'flex';
+
+                            }
+                        }, 1000);
+                    } else if (data.sperated_f) {
+
+                        const animation = document.getElementById('animation');
+                        animation.style.display = 'none'
+
+                        // Get the radio buttons container
+                        let radioContainer = document.getElementById('audioForm');
+                        radioContainer.style.display = "block";
+                        console.log(data.check)
+
+                        let sel = document.getElementById('audio');
+                        list = data.sperated_f;
+                        // Array of audio files
+                        // list = ['bass.wav', 'drums.wav', 'other.wav', 'vocals.wav'];
+
+
+                        radioContainer.innerHTML = " ";
+                        
+                        // Dynamically create radio buttons based on the list array
+                        list.forEach((audioFile, index) => {
+                            let label = document.createElement('label');
+                            let radio = document.createElement('input');
+                            radio.type = 'radio';
+                            radio.name = 'audioFile';
+                            radio.value = audioFile;
+
+
+                            label.appendChild(document.createTextNode(audioFile));
+                            radioContainer.appendChild(radio);
+                            radioContainer.appendChild(label);
+                        });
+                        let buttn = document.createElement('button');
+                        buttn.type = 'submit'
+                        buttn.textContent = 'Submit'
+                        radioContainer.appendChild(buttn);
+
+                        document.getElementById('audioForm').addEventListener('submit', (e) => {
+                            e.preventDefault();
+
+                            let selectedValue = document.querySelector('input[name="audioFile"]:checked').value;
+                            console.log(selectedValue);
+                            if (!selectedValue) {
+                                console.error('No audio selected');
+                                return;
+                            }
+                            fetchData(selectedValue, data.check, data.inst)
+
+
+
+                        })
+
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                    const animation = document.getElementById('animation');
+                    animation.style.display = 'none'
+                    let errorMessage = document.getElementById('error_msg');
+                    const success = false;
+                    setTimeout(function () {
+                        if (!success) {
+                            errorMessage.textContent = error.message;
+                            document.getElementById('failurePopup').style.display = 'flex';
+
+                        }
+                    }, 1000);
+                });
+
+        });
+
+
+
+    </script>
+</body>
+
+</html>
