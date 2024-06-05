@@ -1,0 +1,12 @@
+flask
+torch
+torchaudio
+pygame
+sound_to_midi
+midiutil
+mido
+tensorflow-gpu==2.10.0
+
+### Installation from Github repo
+
+git clone https://github.com/tiagoft/audio_to_midi.git
