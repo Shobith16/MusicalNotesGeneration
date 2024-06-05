@@ -98,7 +98,7 @@ The instrument classification model was trained on an audio dataset containing s
 
 ## Results
 
-The project successfully separates audio tracks into individual components, classifies the musical instruments, converts sound to MIDI, and extracts musical notes. Detailed results, including accuracy metrics and sample outputs, can be found in the `results` directory.
+The project successfully separates audio tracks into individual components, classifies the musical instruments, converts sound to MIDI, and extracts musical notes. Detailed results, including accuracy metrics and sample outputs, can be found in terminal.
 
 ## Contributing
 
